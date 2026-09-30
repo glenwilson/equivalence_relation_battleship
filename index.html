@@ -1,21 +1,22 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <title>Equivalence Battleship</title>
 
   <style>
     :root {
       --navy: #102a43;
-      --navy-2: #183b56;
+      --navy-light: #183b56;
       --blue: #247ba0;
-      --blue-light: #d9eef7;
+      --blue-dark: #17627f;
       --orange: #f59e0b;
       --orange-dark: #c56f00;
-      --green: #2e9d68;
-      --red: #d64545;
-      --paper: #f5f8fb;
+      --green: #23845a;
+      --red: #c83e3e;
+      --paper: #f4f8fb;
       --white: #ffffff;
       --ink: #1f2933;
       --muted: #64748b;
@@ -31,13 +32,22 @@
     body {
       margin: 0;
       min-height: 100vh;
+      color: var(--ink);
       font-family:
         Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
         "Segoe UI", sans-serif;
-      color: var(--ink);
       background:
-        radial-gradient(circle at top left, rgba(36, 123, 160, 0.13), transparent 32rem),
-        linear-gradient(180deg, #eef6fa 0%, var(--paper) 45%, #edf2f7 100%);
+        radial-gradient(
+          circle at top left,
+          rgba(36, 123, 160, 0.14),
+          transparent 32rem
+        ),
+        linear-gradient(
+          180deg,
+          #edf7fb 0%,
+          var(--paper) 48%,
+          #edf2f7 100%
+        );
     }
 
     button,
@@ -50,41 +60,17 @@
       cursor: pointer;
     }
 
-    button:disabled {
+    button:disabled,
+    select:disabled {
       cursor: not-allowed;
-      opacity: 0.48;
+      opacity: 0.5;
     }
 
-    .app-shell {
-      width: min(1180px, calc(100% - 28px));
-      margin: 0 auto;
-      padding: 26px 0 50px;
-    }
-
-    .hero {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 22px;
-      margin-bottom: 24px;
-    }
-
-    .hero-title {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .logo {
-      display: grid;
-      place-items: center;
-      width: 58px;
-      height: 58px;
-      border-radius: 17px;
-      color: white;
-      font-size: 29px;
-      background: linear-gradient(145deg, var(--navy), var(--blue));
-      box-shadow: var(--shadow);
+    button:focus-visible,
+    select:focus-visible,
+    input:focus-visible {
+      outline: 3px solid rgba(36, 123, 160, 0.28);
+      outline-offset: 2px;
     }
 
     h1,
@@ -95,10 +81,45 @@
     }
 
     h1 {
-      margin-bottom: 4px;
+      margin-bottom: 5px;
       color: var(--navy);
-      font-size: clamp(1.65rem, 4vw, 2.45rem);
+      font-size: clamp(1.7rem, 5vw, 2.6rem);
       line-height: 1.05;
+    }
+
+    h2 {
+      color: var(--navy);
+    }
+
+    h3 {
+      color: var(--navy);
+    }
+
+    .app-shell {
+      width: min(1180px, calc(100% - 26px));
+      margin: 0 auto;
+      padding: 26px 0 50px;
+    }
+
+    .hero {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 24px;
+    }
+
+    .logo {
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      width: 60px;
+      height: 60px;
+      border-radius: 18px;
+      color: white;
+      font-size: 30px;
+      font-weight: 900;
+      background: linear-gradient(145deg, var(--navy), var(--blue));
+      box-shadow: var(--shadow);
     }
 
     .subtitle {
@@ -108,16 +129,16 @@
 
     .card {
       padding: 22px;
-      border: 1px solid rgba(215, 224, 232, 0.9);
+      border: 1px solid rgba(215, 224, 232, 0.94);
       border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.93);
+      background: rgba(255, 255, 255, 0.95);
       box-shadow: var(--shadow);
     }
 
     .setup-grid,
     .game-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.25fr) minmax(290px, 0.75fr);
+      grid-template-columns: minmax(0, 1.3fr) minmax(290px, 0.7fr);
       gap: 20px;
     }
 
@@ -133,33 +154,38 @@
       gap: 7px;
     }
 
-    .field.full {
-      grid-column: 1 / -1;
-    }
-
     label,
     .label {
       color: var(--navy);
-      font-size: 0.86rem;
-      font-weight: 750;
+      font-size: 0.88rem;
+      font-weight: 780;
     }
 
     select,
     input[type="text"] {
       width: 100%;
-      min-height: 45px;
-      padding: 9px 12px;
+      min-height: 46px;
+      padding: 10px 12px;
       border: 1px solid var(--border);
       border-radius: 11px;
       color: var(--ink);
       background: white;
     }
 
-    select:focus,
-    input:focus,
-    button:focus-visible {
-      outline: 3px solid rgba(36, 123, 160, 0.25);
-      outline-offset: 2px;
+    .small-note {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .info-box {
+      margin-top: 16px;
+      padding: 14px;
+      border: 1px solid #c8e2ed;
+      border-radius: 12px;
+      color: #174f68;
+      background: #f1faff;
+      line-height: 1.5;
     }
 
     .rule-card {
@@ -173,7 +199,6 @@
 
     .rule-card h3 {
       margin-bottom: 7px;
-      color: var(--navy);
     }
 
     .rule-card p {
@@ -184,12 +209,6 @@
     .stars {
       color: var(--orange-dark);
       letter-spacing: 2px;
-    }
-
-    .candidate-count,
-    .small-note {
-      color: var(--muted);
-      font-size: 0.87rem;
     }
 
     .button-row {
@@ -205,11 +224,10 @@
       padding: 10px 16px;
       border: 0;
       border-radius: 11px;
-      font-weight: 760;
+      font-weight: 780;
       transition:
         transform 120ms ease,
-        box-shadow 120ms ease,
-        background 120ms ease;
+        box-shadow 120ms ease;
     }
 
     .btn:hover:not(:disabled) {
@@ -218,7 +236,7 @@
 
     .btn-primary {
       color: white;
-      background: linear-gradient(135deg, var(--blue), #1b6f92);
+      background: linear-gradient(135deg, var(--blue), var(--blue-dark));
       box-shadow: 0 8px 18px rgba(36, 123, 160, 0.22);
     }
 
@@ -261,14 +279,67 @@
       line-height: 1.45;
     }
 
-    .builder-title {
-      margin-bottom: 6px;
+    .status-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding: 15px 18px;
+      border-radius: 15px;
+      color: white;
+      background: linear-gradient(135deg, var(--navy), var(--navy-light));
+      box-shadow: var(--shadow);
     }
 
-    .builder-help {
-      margin-bottom: 20px;
-      color: var(--muted);
-      line-height: 1.5;
+    .status-bar strong {
+      color: #ffd27a;
+    }
+
+    .action-box {
+      margin-bottom: 18px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: #fbfdff;
+    }
+
+    .point-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .pick-point {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      padding: 0;
+      border: 3px solid white;
+      border-radius: 50%;
+      color: white;
+      font-weight: 850;
+      background: var(--navy);
+      box-shadow:
+        0 0 0 2px var(--navy),
+        0 5px 12px rgba(16, 42, 67, 0.2);
+    }
+
+    .pick-point.selected {
+      color: var(--navy);
+      background: var(--orange);
+      box-shadow:
+        0 0 0 3px #ffd991,
+        0 6px 15px rgba(245, 158, 11, 0.3);
+    }
+
+    .question-preview {
+      min-height: 34px;
+      color: var(--navy);
+      font-size: 1.15rem;
+      font-weight: 800;
     }
 
     .dot-line {
@@ -276,17 +347,18 @@
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 6px;
-      margin: 26px 0 24px;
+      gap: 5px;
+      margin: 28px 0 24px;
       padding: 0 8px;
+      overflow-x: auto;
     }
 
     .dot-line::before {
       position: absolute;
       z-index: 0;
       top: 20px;
-      right: 26px;
-      left: 26px;
+      right: 28px;
+      left: 28px;
       height: 4px;
       border-radius: 3px;
       background: #d7e0e8;
@@ -297,6 +369,7 @@
       position: relative;
       z-index: 1;
       display: flex;
+      flex: 1 0 43px;
       flex-direction: column;
       align-items: center;
       gap: 7px;
@@ -326,19 +399,16 @@
         0 6px 15px rgba(245, 158, 11, 0.28);
     }
 
-    .dot.assigned {
-      opacity: 0.94;
-    }
-
     .dot-number {
       color: var(--muted);
-      font-size: 0.78rem;
+      font-size: 0.72rem;
       font-weight: 700;
+      white-space: nowrap;
     }
 
     .partition-preview {
       min-height: 80px;
-      margin-top: 12px;
+      margin-top: 14px;
       padding: 14px;
       border: 1px dashed #b8c8d5;
       border-radius: 13px;
@@ -349,6 +419,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 9px;
+      margin-top: 9px;
     }
 
     .class-pill {
@@ -369,7 +440,7 @@
       min-height: 24px;
       margin-top: 11px;
       font-size: 0.9rem;
-      font-weight: 700;
+      font-weight: 750;
     }
 
     .validation.good {
@@ -380,59 +451,38 @@
       color: var(--red);
     }
 
-    .status-bar {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 20px;
-      padding: 15px 18px;
-      border-radius: 15px;
-      color: white;
-      background: linear-gradient(135deg, var(--navy), var(--navy-2));
-      box-shadow: var(--shadow);
-    }
-
-    .status-bar strong {
-      color: #ffd27a;
-    }
-
-    .action-box {
-      margin-bottom: 18px;
-      padding: 18px;
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      background: #fbfdff;
-    }
-
-    .question-row {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr auto;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .relation-symbol {
-      color: var(--navy);
-      font-size: 1.55rem;
-      font-weight: 850;
-    }
-
     .knowledge-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(76px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
       gap: 7px;
-      margin-top: 13px;
+      margin-top: 14px;
     }
 
     .knowledge-cell {
-      padding: 8px 5px;
+      min-height: 42px;
+      padding: 8px 6px;
       border: 1px solid var(--border);
       border-radius: 9px;
       text-align: center;
-      font-size: 0.8rem;
-      font-weight: 730;
+      color: var(--muted);
+      font-size: 0.81rem;
+      font-weight: 750;
       background: white;
+    }
+
+    button.knowledge-cell {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      transition:
+        transform 100ms ease,
+        border-color 100ms ease;
+    }
+
+    button.knowledge-cell:hover {
+      transform: translateY(-1px);
+      border-color: var(--blue);
     }
 
     .knowledge-cell.yes {
@@ -449,33 +499,32 @@
 
     .knowledge-cell.unknown {
       color: var(--muted);
+      background: white;
     }
 
-    .log {
-      display: grid;
-      gap: 9px;
-      max-height: 520px;
-      overflow: auto;
-      padding-right: 5px;
+    .knowledge-cell strong {
+      font-size: 1rem;
     }
 
-    .log-entry {
-      padding: 12px;
-      border-left: 4px solid var(--blue);
-      border-radius: 10px;
-      background: #f5f9fc;
-      line-height: 1.45;
-    }
-
-    .log-entry.declare {
-      border-left-color: var(--orange);
-      background: #fff8e8;
-    }
-
-    .log-entry small {
-      display: block;
-      margin-top: 4px;
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 10px;
       color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .legend-mark {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
     }
 
     .score-row {
@@ -498,6 +547,33 @@
       margin-top: 3px;
       color: var(--navy);
       font-size: 1.4rem;
+    }
+
+    .log {
+      display: grid;
+      gap: 9px;
+      max-height: 540px;
+      overflow: auto;
+      padding-right: 5px;
+    }
+
+    .log-entry {
+      padding: 12px;
+      border-left: 4px solid var(--blue);
+      border-radius: 10px;
+      background: #f5f9fc;
+      line-height: 1.45;
+    }
+
+    .log-entry.declare {
+      border-left-color: var(--orange);
+      background: #fff8e8;
+    }
+
+    .log-entry small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
     }
 
     .overlay,
@@ -550,36 +626,10 @@
       background: #f8fafc;
     }
 
-    .legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 0.82rem;
-    }
-
-    .legend span {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .legend-mark {
-      width: 12px;
-      height: 12px;
-      border-radius: 3px;
-    }
-
     @media (max-width: 820px) {
       .setup-grid,
       .game-grid {
         grid-template-columns: 1fr;
-      }
-
-      .hero {
-        align-items: flex-start;
-        flex-direction: column;
       }
     }
 
@@ -588,31 +638,33 @@
         grid-template-columns: 1fr;
       }
 
-      .field.full {
-        grid-column: auto;
+      .card {
+        padding: 17px;
       }
 
-      .question-row {
-        grid-template-columns: 1fr auto 1fr;
+      .hero {
+        align-items: flex-start;
       }
 
-      .question-row .btn {
-        grid-column: 1 / -1;
+      .logo {
+        width: 52px;
+        height: 52px;
+      }
+
+      .pick-point {
+        width: 42px;
+        height: 42px;
       }
 
       .dot {
-        width: 34px;
-        height: 34px;
+        width: 36px;
+        height: 36px;
         border-width: 3px;
         font-size: 0.8rem;
       }
 
       .dot-line::before {
-        top: 16px;
-      }
-
-      .card {
-        padding: 17px;
+        top: 17px;
       }
     }
   </style>
@@ -621,14 +673,13 @@
 <body>
   <main class="app-shell">
     <header class="hero">
-      <div class="hero-title">
-        <div class="logo" aria-hidden="true">≈</div>
-        <div>
-          <h1>Equivalence Battleship</h1>
-          <p class="subtitle">
-            Discover the opponent’s hidden partition using equivalence questions.
-          </p>
-        </div>
+      <div class="logo" aria-hidden="true">≈</div>
+
+      <div>
+        <h1>Equivalence Battleship</h1>
+        <p class="subtitle">
+          Discover the opponent’s hidden partition using equivalence questions.
+        </p>
       </div>
     </header>
 
@@ -650,7 +701,10 @@
       "#0f766e",
       "#be185d",
       "#4f46e5",
-      "#64748b"
+      "#64748b",
+      "#92400e",
+      "#0369a1",
+      "#7c3aed"
     ];
 
     const RULES = [
@@ -746,18 +800,32 @@
       size: 9,
       ruleId: 3,
       difficulty: "medium",
+      deductionMode: "manual",
+
       players: [],
       setupPlayer: 0,
       current: 0,
+
       candidates: [[], []],
-      log: [],
+      manualMarks: [{}, {}],
+
+      questionSelection: [],
       questionCounts: [0, 0],
+      log: [],
       winner: null
     };
 
     let builder = null;
-    const partitionCache = new Map();
+
+    /*
+      Candidate partitions are stored as compact numbers.
+
+      Each point uses four bits. The value in those bits identifies the
+      point's class. This is exact for boards up to 12 points and uses much
+      less memory than storing hundreds of thousands of nested arrays.
+    */
     const candidateCache = new Map();
+    const POW16 = Array.from({ length: 13 }, (_, index) => 16 ** index);
 
     function ruleById(id) {
       return RULES.find(rule => rule.id === Number(id));
@@ -765,6 +833,48 @@
 
     function stars(count) {
       return "★".repeat(count);
+    }
+
+    function labelAt(code, point) {
+      return Math.floor(code / POW16[point]) % 16;
+    }
+
+    function labelsToCode(labels) {
+      let code = 0;
+
+      for (let point = 0; point < labels.length; point++) {
+        code += labels[point] * POW16[point];
+      }
+
+      return code;
+    }
+
+    function partitionToCode(partition, size = state.size) {
+      const labels = new Array(size).fill(0);
+
+      partition.forEach((group, classIndex) => {
+        group.forEach(point => {
+          labels[point] = classIndex;
+        });
+      });
+
+      return labelsToCode(labels);
+    }
+
+    function codeToPartition(code, size = state.size) {
+      const groups = [];
+
+      for (let point = 0; point < size; point++) {
+        const label = labelAt(code, point);
+
+        if (!groups[label]) {
+          groups[label] = [];
+        }
+
+        groups[label].push(point);
+      }
+
+      return groups.filter(Boolean);
     }
 
     function normalizePartition(partition) {
@@ -783,40 +893,21 @@
         .join("  ");
     }
 
-    function generatePartitions(size) {
-      if (partitionCache.has(size)) {
-        return partitionCache.get(size);
-      }
+    function sameClassCode(code, a, b) {
+      return labelAt(code, a) === labelAt(code, b);
+    }
 
-      const output = [];
-
-      function recurse(point, groups) {
-        if (point === size) {
-          output.push(groups.map(group => [...group]));
-          return;
-        }
-
-        for (let i = 0; i < groups.length; i++) {
-          groups[i].push(point);
-          recurse(point + 1, groups);
-          groups[i].pop();
-        }
-
-        groups.push([point]);
-        recurse(point + 1, groups);
-        groups.pop();
-      }
-
-      recurse(0, []);
-      partitionCache.set(size, output);
-      return output;
+    function sameClassPartition(partition, a, b) {
+      return partition.some(
+        group => group.includes(a) && group.includes(b)
+      );
     }
 
     function isConsecutive(group) {
       const sorted = [...group].sort((a, b) => a - b);
 
-      for (let i = 1; i < sorted.length; i++) {
-        if (sorted[i] !== sorted[i - 1] + 1) {
+      for (let index = 1; index < sorted.length; index++) {
+        if (sorted[index] !== sorted[index - 1] + 1) {
           return false;
         }
       }
@@ -825,7 +916,10 @@
     }
 
     function moduloPartition(size, modulus) {
-      const groups = Array.from({ length: modulus }, () => []);
+      const groups = Array.from(
+        { length: modulus },
+        () => []
+      );
 
       for (let point = 0; point < size; point++) {
         groups[point % modulus].push(point);
@@ -839,22 +933,28 @@
       const sizes = groups.map(group => group.length);
       const nonSingletons = groups.filter(group => group.length >= 2);
       const allConsecutive = groups.every(isConsecutive);
-      const allEqual = sizes.every(value => value === sizes[0]);
+      const allEqual = sizes.every(sizeValue => sizeValue === sizes[0]);
 
       switch (Number(ruleId)) {
         case 1:
-          return groups.length === 2 && sizes[0] === sizes[1];
+          return (
+            groups.length === 2 &&
+            sizes[0] === sizes[1]
+          );
 
         case 2:
-          return groups.length > 0 && sizes.every(value => value === 2);
+          return (
+            groups.length > 0 &&
+            sizes.every(sizeValue => sizeValue === 2)
+          );
 
         case 3:
           return groups.length === 2;
 
         case 4:
           return (
-            sizes.filter(value => value === 3).length === 1 &&
-            sizes.every(value => value === 1 || value === 3)
+            sizes.filter(sizeValue => sizeValue === 3).length === 1 &&
+            sizes.every(sizeValue => sizeValue === 1 || sizeValue === 3)
           );
 
         case 5:
@@ -876,13 +976,15 @@
           return allEqual;
 
         case 11:
-          return sizes.every(value => value >= 2);
+          return sizes.every(sizeValue => sizeValue >= 2);
 
         case 12: {
           const key = partitionKey(groups);
 
           for (let modulus = 1; modulus <= size; modulus++) {
-            if (partitionKey(moduloPartition(size, modulus)) === key) {
+            if (
+              partitionKey(moduloPartition(size, modulus)) === key
+            ) {
               return true;
             }
           }
@@ -895,22 +997,175 @@
       }
     }
 
+    function rulePossible(size, ruleId) {
+      if (ruleId === 1 || ruleId === 2) {
+        return size % 2 === 0;
+      }
+
+      return true;
+    }
+
     function getCandidates(size, ruleId) {
       const cacheKey = `${size}-${ruleId}`;
 
-      if (!candidateCache.has(cacheKey)) {
-        const candidates = generatePartitions(size).filter(partition =>
-          matchesRule(partition, ruleId, size)
-        );
-
-        candidateCache.set(cacheKey, candidates);
+      if (candidateCache.has(cacheKey)) {
+        return candidateCache.get(cacheKey);
       }
 
-      return candidateCache.get(cacheKey);
-    }
+      if (!rulePossible(size, ruleId)) {
+        candidateCache.set(cacheKey, []);
+        return [];
+      }
 
-    function sameClass(partition, a, b) {
-      return partition.some(group => group.includes(a) && group.includes(b));
+      /*
+        Cards 7, 8 and 12 have especially simple structures, so they are
+        generated directly.
+      */
+      if (ruleId === 7) {
+        const output = [];
+        const numberOfBoundaries = size - 1;
+
+        for (
+          let mask = 0;
+          mask < 2 ** numberOfBoundaries;
+          mask++
+        ) {
+          const labels = new Array(size).fill(0);
+          let classIndex = 0;
+
+          for (let point = 1; point < size; point++) {
+            if (mask & (1 << (point - 1))) {
+              classIndex++;
+            }
+
+            labels[point] = classIndex;
+          }
+
+          output.push(labelsToCode(labels));
+        }
+
+        candidateCache.set(cacheKey, output);
+        return output;
+      }
+
+      if (ruleId === 8) {
+        const output = [];
+
+        for (let classSize = 1; classSize <= size; classSize++) {
+          if (size % classSize !== 0) continue;
+
+          const labels = new Array(size);
+
+          for (let point = 0; point < size; point++) {
+            labels[point] = Math.floor(point / classSize);
+          }
+
+          output.push(labelsToCode(labels));
+        }
+
+        candidateCache.set(cacheKey, output);
+        return output;
+      }
+
+      if (ruleId === 12) {
+        const output = [];
+
+        for (let modulus = 1; modulus <= size; modulus++) {
+          output.push(
+            partitionToCode(moduloPartition(size, modulus), size)
+          );
+        }
+
+        candidateCache.set(cacheKey, [...new Set(output)]);
+        return candidateCache.get(cacheKey);
+      }
+
+      const output = [];
+      const labels = new Uint8Array(size);
+      const counts = new Uint8Array(size);
+
+      labels[0] = 0;
+      counts[0] = 1;
+
+      function recurse(point, maxLabel, code) {
+        if (point === size) {
+          const partition = codeToPartition(code, size);
+
+          if (matchesRule(partition, ruleId, size)) {
+            output.push(code);
+          }
+
+          return;
+        }
+
+        let highestAllowed = maxLabel + 1;
+
+        if (ruleId === 1 || ruleId === 3) {
+          highestAllowed = Math.min(highestAllowed, 1);
+        }
+
+        if (ruleId === 9) {
+          highestAllowed = Math.min(highestAllowed, 2);
+        }
+
+        for (
+          let classIndex = 0;
+          classIndex <= highestAllowed;
+          classIndex++
+        ) {
+          const newCount = counts[classIndex] + 1;
+
+          if (ruleId === 1 && newCount > size / 2) {
+            continue;
+          }
+
+          if (ruleId === 2 && newCount > 2) {
+            continue;
+          }
+
+          if (ruleId === 4 && newCount > 3) {
+            continue;
+          }
+
+          labels[point] = classIndex;
+          counts[classIndex]++;
+
+          let nonSingletonCount = 0;
+
+          if (ruleId === 5 || ruleId === 6) {
+            for (
+              let index = 0;
+              index <= Math.max(maxLabel, classIndex);
+              index++
+            ) {
+              if (counts[index] >= 2) {
+                nonSingletonCount++;
+              }
+            }
+          }
+
+          const invalidCard5 =
+            ruleId === 5 && nonSingletonCount > 1;
+
+          const invalidCard6 =
+            ruleId === 6 && nonSingletonCount > 2;
+
+          if (!invalidCard5 && !invalidCard6) {
+            recurse(
+              point + 1,
+              Math.max(maxLabel, classIndex),
+              code + classIndex * POW16[point]
+            );
+          }
+
+          counts[classIndex]--;
+        }
+      }
+
+      recurse(1, 0, 0);
+
+      candidateCache.set(cacheKey, output);
+      return output;
     }
 
     function randomChoice(items) {
@@ -940,24 +1195,36 @@
 
     function renderSetup() {
       const selectedRule = ruleById(state.ruleId);
-      const candidateCount = getCandidates(state.size, state.ruleId).length;
 
       document.getElementById("app").innerHTML = `
         <section class="setup-grid">
           <div class="card">
             <h2>Start a new game</h2>
+
             <p class="small-note">
-              Both players use the same rule card but create different secret partitions.
+              Both players use the same rule card but create different
+              secret partitions.
             </p>
 
             <div class="field-grid">
               <div class="field">
                 <label for="mode">Game mode</label>
-                <select id="mode" onchange="updateSetting('mode', this.value)">
-                  <option value="ai" ${state.mode === "ai" ? "selected" : ""}>
+
+                <select
+                  id="mode"
+                  onchange="updateSetting('mode', this.value)"
+                >
+                  <option
+                    value="ai"
+                    ${state.mode === "ai" ? "selected" : ""}
+                  >
                     Player vs. computer
                   </option>
-                  <option value="pvp" ${state.mode === "pvp" ? "selected" : ""}>
+
+                  <option
+                    value="pvp"
+                    ${state.mode === "pvp" ? "selected" : ""}
+                  >
                     Two players — pass and play
                   </option>
                 </select>
@@ -965,47 +1232,96 @@
 
               <div class="field">
                 <label for="boardSize">Number of points</label>
-                <select id="boardSize" onchange="changeBoardSize(this.value)">
-                  <option value="8" ${state.size === 8 ? "selected" : ""}>
-                    8 points: 0–7
-                  </option>
-                  <option value="9" ${state.size === 9 ? "selected" : ""}>
-                    9 points: 0–8
-                  </option>
+
+                <select
+                  id="boardSize"
+                  onchange="changeBoardSize(this.value)"
+                >
+                  ${Array.from({ length: 7 }, (_, index) => index + 6)
+                    .map(size => `
+                      <option
+                        value="${size}"
+                        ${state.size === size ? "selected" : ""}
+                      >
+                        ${size} points: 0–${size - 1}
+                      </option>
+                    `)
+                    .join("")}
                 </select>
               </div>
 
               <div class="field">
-                <label for="difficulty">Computer difficulty</label>
+                <label for="difficulty">Computer strategy</label>
+
                 <select
                   id="difficulty"
                   onchange="updateSetting('difficulty', this.value)"
                   ${state.mode !== "ai" ? "disabled" : ""}
                 >
-                  <option value="easy" ${state.difficulty === "easy" ? "selected" : ""}>
+                  <option
+                    value="easy"
+                    ${state.difficulty === "easy" ? "selected" : ""}
+                  >
                     Easy — random useful questions
                   </option>
-                  <option value="medium" ${state.difficulty === "medium" ? "selected" : ""}>
-                    Medium — good balanced questions
+
+                  <option
+                    value="medium"
+                    ${state.difficulty === "medium" ? "selected" : ""}
+                  >
+                    Medium — usually good questions
                   </option>
-                  <option value="hard" ${state.difficulty === "hard" ? "selected" : ""}>
-                    Hard — strongest information split
+
+                  <option
+                    value="hard"
+                    ${state.difficulty === "hard" ? "selected" : ""}
+                  >
+                    Hard — best immediate split
+                  </option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="deductionMode">Deduction notebook</label>
+
+                <select
+                  id="deductionMode"
+                  onchange="updateSetting('deductionMode', this.value)"
+                >
+                  <option
+                    value="manual"
+                    ${state.deductionMode === "manual" ? "selected" : ""}
+                  >
+                    Manual — students mark pairs
+                  </option>
+
+                  <option
+                    value="automatic"
+                    ${state.deductionMode === "automatic" ? "selected" : ""}
+                  >
+                    Automatic — show deductions
                   </option>
                 </select>
               </div>
 
               <div class="field">
                 <label for="rule">Rule card</label>
-                <select id="rule" onchange="changeRule(this.value)">
+
+                <select
+                  id="rule"
+                  onchange="changeRule(this.value)"
+                >
                   ${RULES.map(rule => {
-                    const count = getCandidates(state.size, rule.id).length;
+                    const possible = rulePossible(state.size, rule.id);
+
                     return `
                       <option
                         value="${rule.id}"
                         ${state.ruleId === rule.id ? "selected" : ""}
-                        ${count === 0 ? "disabled" : ""}
+                        ${possible ? "" : "disabled"}
                       >
-                        Card ${rule.id}: ${rule.name}${count === 0 ? " — unavailable" : ""}
+                        Card ${rule.id}: ${rule.name}
+                        ${possible ? "" : " — unavailable"}
                       </option>
                     `;
                   }).join("")}
@@ -1016,18 +1332,53 @@
             <article class="rule-card">
               <h3>
                 Card ${selectedRule.id}: ${selectedRule.name}
-                <span class="stars">${stars(selectedRule.stars)}</span>
+                <span class="stars">
+                  ${stars(selectedRule.stars)}
+                </span>
               </h3>
+
               <p>${selectedRule.description}</p>
-              <div class="candidate-count">
-                ${candidateCount.toLocaleString()} valid partition${
-                  candidateCount === 1 ? "" : "s"
-                } on this board.
-              </div>
             </article>
 
+            ${
+              state.mode === "ai"
+                ? `
+                  <div class="info-box">
+                    <strong>What does computer difficulty mean?</strong><br>
+                    The computer’s hidden partition is always selected randomly
+                    from the valid partitions. Difficulty changes only the
+                    computer’s questioning strategy. The computer does not make
+                    risky declarations: it declares when its questions have
+                    logically identified one partition.
+                  </div>
+                `
+                : ""
+            }
+
+            ${
+              state.deductionMode === "manual"
+                ? `
+                  <div class="info-box">
+                    <strong>Manual notebook:</strong>
+                    answers appear in the game record, but the deduction boxes
+                    are not filled automatically. Students must record direct
+                    answers and infer consequences themselves.
+                  </div>
+                `
+                : `
+                  <div class="info-box">
+                    <strong>Automatic notebook:</strong>
+                    the game displays everything forced by the answers and the
+                    selected rule card.
+                  </div>
+                `
+            }
+
             <div class="button-row">
-              <button class="btn btn-primary" onclick="beginSecretSetup()">
+              <button
+                class="btn btn-primary"
+                onclick="beginSecretSetup()"
+              >
                 Build secret partition
               </button>
             </div>
@@ -1040,31 +1391,32 @@
               <div class="mini-rule">
                 <strong>1. Create a partition</strong>
                 <p>
-                  Group the points into equivalence classes that satisfy the selected card.
+                  Group all points into equivalence classes satisfying the
+                  selected card.
                 </p>
               </div>
 
               <div class="mini-rule">
                 <strong>2. Ask one question</strong>
                 <p>
-                  Ask whether two points are equivalent, for example
-                  “Is 2 ∼ 6?”
+                  Select two points and ask whether they are equivalent,
+                  for example “Is 2 ∼ 6?”
                 </p>
               </div>
 
               <div class="mini-rule">
-                <strong>3. Use equivalence properties</strong>
+                <strong>3. Make deductions</strong>
                 <p>
-                  Reflexivity, symmetry, and transitivity give you information without
-                  requiring every possible question.
+                  Use reflexivity, symmetry, transitivity, and the rule card
+                  to determine more relationships.
                 </p>
               </div>
 
               <div class="mini-rule">
                 <strong>4. Declare when certain</strong>
                 <p>
-                  You win by declaring the complete hidden partition correctly.
-                  An incorrect declaration loses immediately.
+                  A correct declaration wins. An incorrect declaration loses
+                  immediately.
                 </p>
               </div>
             </div>
@@ -1081,12 +1433,12 @@
     function changeBoardSize(value) {
       state.size = Number(value);
 
-      if (getCandidates(state.size, state.ruleId).length === 0) {
-        const firstAvailable = RULES.find(
-          rule => getCandidates(state.size, rule.id).length > 0
+      if (!rulePossible(state.size, state.ruleId)) {
+        const availableRule = RULES.find(
+          rule => rulePossible(state.size, rule.id)
         );
 
-        state.ruleId = firstAvailable.id;
+        state.ruleId = availableRule.id;
       }
 
       render();
@@ -1099,7 +1451,10 @@
 
     function beginSecretSetup() {
       state.players = [
-        { name: "Player 1", secret: null },
+        {
+          name: "Player 1",
+          secret: null
+        },
         {
           name: state.mode === "ai" ? "Computer" : "Player 2",
           secret: null
@@ -1108,6 +1463,7 @@
 
       state.setupPlayer = 0;
       state.screen = "secret";
+
       initializeBuilder("setup");
       render();
     }
@@ -1124,59 +1480,29 @@
       return new Set(builder.classes.flat());
     }
 
-    function renderSecretSetup() {
-      const player = state.players[state.setupPlayer];
-      const rule = ruleById(state.ruleId);
-
-      document.getElementById("app").innerHTML = `
-        <section class="card">
-          <h2 class="builder-title">${escapeHtml(player.name)}: create your secret</h2>
-          <p class="builder-help">
-            Select one or more points, then choose <strong>Add class</strong>.
-            Repeat until every point belongs to exactly one class.
-            Click an existing class to remove it.
-          </p>
-
-          <article class="rule-card">
-            <h3>Card ${rule.id}: ${rule.name}</h3>
-            <p>${rule.description}</p>
-          </article>
-
-          ${builderMarkup()}
-
-          <div class="button-row">
-            <button
-              class="btn btn-primary"
-              id="savePartitionButton"
-              onclick="saveSecretPartition()"
-            >
-              Save secret partition
-            </button>
-
-            <button class="btn btn-secondary" onclick="returnToSetup()">
-              Cancel game
-            </button>
-          </div>
-        </section>
-      `;
-
-      updateBuilderView();
-    }
-
     function builderMarkup() {
       return `
         <div id="dotLine" class="dot-line"></div>
 
         <div class="button-row">
-          <button class="btn btn-primary" onclick="addSelectedClass()">
+          <button
+            class="btn btn-primary"
+            onclick="addSelectedClass()"
+          >
             Add selected class
           </button>
 
-          <button class="btn btn-secondary" onclick="completeSingletons()">
+          <button
+            class="btn btn-secondary"
+            onclick="completeSingletons()"
+          >
             Complete with singletons
           </button>
 
-          <button class="btn btn-secondary" onclick="clearBuilder()">
+          <button
+            class="btn btn-secondary"
+            onclick="clearBuilder()"
+          >
             Clear
           </button>
         </div>
@@ -1190,6 +1516,49 @@
       `;
     }
 
+    function renderSecretSetup() {
+      const player = state.players[state.setupPlayer];
+      const rule = ruleById(state.ruleId);
+
+      document.getElementById("app").innerHTML = `
+        <section class="card">
+          <h2>${escapeHtml(player.name)}: create your secret</h2>
+
+          <p class="small-note">
+            Select all the points belonging to one class and press
+            <strong>Add selected class</strong>. Repeat until every point
+            belongs to one class. Click an existing class below to remove it.
+          </p>
+
+          <article class="rule-card">
+            <h3>Card ${rule.id}: ${rule.name}</h3>
+            <p>${rule.description}</p>
+          </article>
+
+          ${builderMarkup()}
+
+          <div class="button-row">
+            <button
+              id="savePartitionButton"
+              class="btn btn-primary"
+              onclick="saveSecretPartition()"
+            >
+              Save secret partition
+            </button>
+
+            <button
+              class="btn btn-secondary"
+              onclick="returnToSetup()"
+            >
+              Cancel game
+            </button>
+          </div>
+        </section>
+      `;
+
+      updateBuilderView();
+    }
+
     function updateBuilderView() {
       if (!builder) return;
 
@@ -1200,66 +1569,101 @@
 
       if (!dotLine || !classList || !validation) return;
 
-      dotLine.innerHTML = Array.from({ length: state.size }, (_, point) => {
-        const classIndex = builder.classes.findIndex(group => group.includes(point));
-        const isAssigned = assigned.has(point);
-        const isSelected = builder.selected.has(point);
-        const color =
-          classIndex >= 0
-            ? CLASS_COLORS[classIndex % CLASS_COLORS.length]
-            : "#102a43";
+      dotLine.innerHTML = Array
+        .from({ length: state.size }, (_, point) => {
+          const classIndex = builder.classes.findIndex(
+            group => group.includes(point)
+          );
 
-        return `
-          <div class="dot-wrap">
-            <button
-              class="dot ${isSelected ? "selected" : ""} ${
-                isAssigned ? "assigned" : ""
-              }"
-              style="${isAssigned ? `background:${color};box-shadow:0 0 0 2px ${color},0 5px 12px rgba(16,42,67,.2)` : ""}"
-              onclick="toggleBuilderPoint(${point})"
-              ${isAssigned ? "disabled" : ""}
-              aria-label="Point ${point}"
-            >
-              ${point}
-            </button>
-            <span class="dot-number">${isAssigned ? `Class ${classIndex + 1}` : "Free"}</span>
-          </div>
-        `;
-      }).join("");
+          const isAssigned = assigned.has(point);
+          const isSelected = builder.selected.has(point);
+
+          const color =
+            classIndex >= 0
+              ? CLASS_COLORS[classIndex % CLASS_COLORS.length]
+              : "#102a43";
+
+          return `
+            <div class="dot-wrap">
+              <button
+                class="dot ${isSelected ? "selected" : ""}"
+                style="${
+                  isAssigned
+                    ? `
+                      background:${color};
+                      box-shadow:
+                        0 0 0 2px ${color},
+                        0 5px 12px rgba(16,42,67,.2);
+                    `
+                    : ""
+                }"
+                onclick="toggleBuilderPoint(${point})"
+                ${isAssigned ? "disabled" : ""}
+                aria-label="Point ${point}"
+              >
+                ${point}
+              </button>
+
+              <span class="dot-number">
+                ${
+                  isAssigned
+                    ? `Class ${classIndex + 1}`
+                    : "Free"
+                }
+              </span>
+            </div>
+          `;
+        })
+        .join("");
 
       if (builder.classes.length === 0) {
         classList.innerHTML = `
-          <span class="empty-message">No classes have been added yet.</span>
+          <span class="empty-message">
+            No classes have been added yet.
+          </span>
         `;
       } else {
-        classList.innerHTML = builder.classes.map((group, index) => `
-          <button
-            class="class-pill"
-            style="background:${CLASS_COLORS[index % CLASS_COLORS.length]}"
-            onclick="removeBuilderClass(${index})"
-            title="Remove this class"
-          >
-            {${[...group].sort((a, b) => a - b).join(", ")}}
-          </button>
-        `).join("");
+        classList.innerHTML = builder.classes
+          .map((group, index) => `
+            <button
+              class="class-pill"
+              style="
+                background:
+                  ${CLASS_COLORS[index % CLASS_COLORS.length]}
+              "
+              onclick="removeBuilderClass(${index})"
+              title="Remove this class"
+            >
+              {${[...group].sort((a, b) => a - b).join(", ")}}
+            </button>
+          `)
+          .join("");
       }
 
-      const status = validateBuilder();
+      const result = validateBuilder();
 
-      validation.className = `validation ${status.valid ? "good" : "bad"}`;
-      validation.textContent = status.message;
+      validation.className =
+        `validation ${result.valid ? "good" : "bad"}`;
 
-      const saveButton = document.getElementById("savePartitionButton");
-      const declarationButton = document.getElementById("submitDeclarationButton");
+      validation.textContent = result.message;
 
-      if (saveButton) saveButton.disabled = !status.valid;
-      if (declarationButton) declarationButton.disabled = !status.valid;
+      const saveButton =
+        document.getElementById("savePartitionButton");
+
+      const declareButton =
+        document.getElementById("submitDeclarationButton");
+
+      if (saveButton) {
+        saveButton.disabled = !result.valid;
+      }
+
+      if (declareButton) {
+        declareButton.disabled = !result.valid;
+      }
     }
 
     function toggleBuilderPoint(point) {
-      const assigned = assignedPoints();
-
-      if (assigned.has(point)) return;
+      if (assignedPoints().has(point)) return;
 
       if (builder.selected.has(point)) {
         builder.selected.delete(point);
@@ -1282,19 +1686,20 @@
     }
 
     function completeSingletons() {
-      const assigned = assignedPoints();
-
-      for (let point = 0; point < state.size; point++) {
-        if (!assigned.has(point) && !builder.selected.has(point)) {
-          builder.classes.push([point]);
-        }
-      }
-
       if (builder.selected.size > 0) {
         builder.classes.push(
           [...builder.selected].sort((a, b) => a - b)
         );
+
         builder.selected.clear();
+      }
+
+      const assigned = assignedPoints();
+
+      for (let point = 0; point < state.size; point++) {
+        if (!assigned.has(point)) {
+          builder.classes.push([point]);
+        }
       }
 
       updateBuilderView();
@@ -1313,26 +1718,38 @@
 
     function validateBuilder() {
       const points = builder.classes.flat();
-      const unique = new Set(points);
+      const uniquePoints = new Set(points);
 
       if (builder.selected.size > 0) {
         return {
           valid: false,
-          message: "Add the currently selected points as a class."
+          message:
+            "Add the currently selected points as a class."
         };
       }
 
-      if (points.length !== state.size || unique.size !== state.size) {
+      if (
+        points.length !== state.size ||
+        uniquePoints.size !== state.size
+      ) {
         return {
           valid: false,
-          message: "Every point must belong to exactly one class."
+          message:
+            "Every point must belong to exactly one class."
         };
       }
 
-      if (!matchesRule(builder.classes, state.ruleId, state.size)) {
+      if (
+        !matchesRule(
+          builder.classes,
+          state.ruleId,
+          state.size
+        )
+      ) {
         return {
           valid: false,
-          message: "This partition does not satisfy the selected rule card."
+          message:
+            "This partition does not satisfy the selected rule card."
         };
       }
 
@@ -1343,16 +1760,21 @@
     }
 
     function saveSecretPartition() {
-      const status = validateBuilder();
-      if (!status.valid) return;
+      const result = validateBuilder();
+
+      if (!result.valid) return;
 
       state.players[state.setupPlayer].secret =
         normalizePartition(builder.classes);
 
       if (state.mode === "ai") {
-        state.players[1].secret = normalizePartition(
-          randomChoice(getCandidates(state.size, state.ruleId))
-        );
+        const possibleSecrets =
+          getCandidates(state.size, state.ruleId);
+
+        const randomSecretCode = randomChoice(possibleSecrets);
+
+        state.players[1].secret =
+          codeToPartition(randomSecretCode, state.size);
 
         startGame();
         return;
@@ -1373,24 +1795,20 @@
       }
     }
 
-    function returnToSetup() {
-      closeModal();
-      state.screen = "setup";
-      builder = null;
-      render();
-    }
-
     function startGame() {
-      const allCandidates = getCandidates(state.size, state.ruleId);
+      const allCandidates =
+        getCandidates(state.size, state.ruleId);
 
       state.candidates = [
         [...allCandidates],
         [...allCandidates]
       ];
 
-      state.current = 0;
-      state.log = [];
+      state.manualMarks = [{}, {}];
+      state.questionSelection = [];
       state.questionCounts = [0, 0];
+      state.log = [];
+      state.current = 0;
       state.winner = null;
       state.screen = "game";
       builder = null;
@@ -1409,8 +1827,10 @@
     function renderGame() {
       const actor = state.current;
       const target = 1 - actor;
-      const isComputerTurn = state.mode === "ai" && actor === 1;
       const rule = ruleById(state.ruleId);
+
+      const computerTurn =
+        state.mode === "ai" && actor === 1;
 
       document.getElementById("app").innerHTML = `
         <div class="status-bar">
@@ -1418,79 +1838,141 @@
             Current turn:
             <strong>${escapeHtml(playerName(actor))}</strong>
           </div>
+
           <div>
-            Card ${rule.id}: <strong>${rule.name}</strong>
+            Card ${rule.id}:
+            <strong>${rule.name}</strong>
           </div>
+
           <div>
-            Board: <strong>0–${state.size - 1}</strong>
+            Board:
+            <strong>0–${state.size - 1}</strong>
           </div>
         </div>
 
         <section class="game-grid">
           <div class="card">
-            <h2>Find ${escapeHtml(playerName(target))}’s partition</h2>
+            <h2>
+              Find ${escapeHtml(playerName(target))}’s partition
+            </h2>
 
             <div class="action-box">
               <h3>Ask an equivalence question</h3>
+
               <p class="small-note">
-                Choose two different points and ask whether they belong to the same class.
+                Select two different points. Click a selected point again
+                to remove it.
               </p>
 
-              <div class="question-row">
-                <select id="questionA" ${isComputerTurn ? "disabled" : ""}>
-                  ${pointOptions(0)}
-                </select>
+              <div class="point-picker">
+                ${questionPointButtons(computerTurn)}
+              </div>
 
-                <span class="relation-symbol">∼</span>
+              <div class="question-preview">
+                ${questionPreview(computerTurn)}
+              </div>
 
-                <select id="questionB" ${isComputerTurn ? "disabled" : ""}>
-                  ${pointOptions(Math.min(1, state.size - 1))}
-                </select>
-
+              <div class="button-row">
                 <button
                   class="btn btn-primary"
-                  onclick="askHumanQuestion()"
-                  ${isComputerTurn ? "disabled" : ""}
+                  onclick="askSelectedQuestion()"
+                  ${
+                    computerTurn ||
+                    state.questionSelection.length !== 2
+                      ? "disabled"
+                      : ""
+                  }
                 >
-                  Ask
+                  Ask question
+                </button>
+
+                <button
+                  class="btn btn-secondary"
+                  onclick="clearQuestionSelection()"
+                  ${
+                    computerTurn ||
+                    state.questionSelection.length === 0
+                      ? "disabled"
+                      : ""
+                  }
+                >
+                  Clear
                 </button>
               </div>
             </div>
 
             <div class="action-box">
               <h3>Declare the complete partition</h3>
+
               <p class="small-note">
-                A correct declaration wins. An incorrect declaration loses immediately.
+                A correct declaration wins. An incorrect declaration loses
+                immediately.
               </p>
 
               <button
                 class="btn btn-warning"
                 onclick="openDeclarationBuilder()"
-                ${isComputerTurn ? "disabled" : ""}
+                ${computerTurn ? "disabled" : ""}
               >
                 Declare partition
               </button>
             </div>
 
             <div class="action-box">
-              <h3>Your deductions</h3>
-              <p>
-                Possible enemy partitions:
-                <strong>${state.candidates[actor].length.toLocaleString()}</strong>
-              </p>
+              <h3>Your deduction notebook</h3>
+
+              ${
+                state.deductionMode === "manual"
+                  ? `
+                    <p class="small-note">
+                      Click a pair to cycle through:
+                      <strong>unknown</strong>,
+                      <strong>equivalent</strong>, and
+                      <strong>not equivalent</strong>.
+                      Nothing is marked automatically.
+                    </p>
+                  `
+                  : `
+                    <p>
+                      Possible enemy partitions:
+                      <strong>
+                        ${state.candidates[actor].length.toLocaleString()}
+                      </strong>
+                    </p>
+
+                    <p class="small-note">
+                      The game automatically applies deductions from all
+                      answers and from the selected rule card.
+                    </p>
+                  `
+              }
 
               <div class="legend">
                 <span>
-                  <i class="legend-mark" style="background:#e8f8f0"></i>
-                  Always equivalent
+                  <i
+                    class="legend-mark"
+                    style="background:#e8f8f0"
+                  ></i>
+                  Equivalent
                 </span>
+
                 <span>
-                  <i class="legend-mark" style="background:#fff0f0"></i>
-                  Always separate
+                  <i
+                    class="legend-mark"
+                    style="background:#fff0f0"
+                  ></i>
+                  Not equivalent
                 </span>
+
                 <span>
-                  <i class="legend-mark" style="background:white;border:1px solid #d7e0e8"></i>
-                  Not yet known
+                  <i
+                    class="legend-mark"
+                    style="
+                      background:white;
+                      border:1px solid #d7e0e8
+                    "
+                  ></i>
+                  Unknown
                 </span>
               </div>
 
@@ -1520,7 +2002,11 @@
             <div class="log" style="margin-top:18px">
               ${
                 state.log.length === 0
-                  ? `<p class="empty-message">No questions have been asked.</p>`
+                  ? `
+                    <p class="empty-message">
+                      No questions have been asked.
+                    </p>
+                  `
                   : state.log.map(logEntryMarkup).join("")
               }
             </div>
@@ -1529,19 +2015,200 @@
       `;
     }
 
-    function pointOptions(selected) {
-      return Array.from({ length: state.size }, (_, point) => `
-        <option value="${point}" ${point === selected ? "selected" : ""}>
-          Point ${point}
-        </option>
-      `).join("");
+    function questionPointButtons(computerTurn) {
+      return Array
+        .from({ length: state.size }, (_, point) => `
+          <button
+            class="pick-point ${
+              state.questionSelection.includes(point)
+                ? "selected"
+                : ""
+            }"
+            onclick="toggleQuestionPoint(${point})"
+            ${computerTurn ? "disabled" : ""}
+            aria-label="Select point ${point}"
+          >
+            ${point}
+          </button>
+        `)
+        .join("");
+    }
+
+    function questionPreview(computerTurn) {
+      if (computerTurn) {
+        return "The computer is choosing a question…";
+      }
+
+      if (state.questionSelection.length === 0) {
+        return "Select two points.";
+      }
+
+      if (state.questionSelection.length === 1) {
+        return `
+          Selected point ${state.questionSelection[0]}.
+          Select one more.
+        `;
+      }
+
+      const [a, b] = state.questionSelection;
+
+      return `Ask: Is ${a} ∼ ${b}?`;
+    }
+
+    function toggleQuestionPoint(point) {
+      if (
+        state.mode === "ai" &&
+        state.current === 1
+      ) {
+        return;
+      }
+
+      const index =
+        state.questionSelection.indexOf(point);
+
+      if (index >= 0) {
+        state.questionSelection.splice(index, 1);
+      } else if (state.questionSelection.length < 2) {
+        state.questionSelection.push(point);
+      } else {
+        state.questionSelection.shift();
+        state.questionSelection.push(point);
+      }
+
+      render();
+    }
+
+    function clearQuestionSelection() {
+      state.questionSelection = [];
+      render();
+    }
+
+    function askSelectedQuestion() {
+      if (state.questionSelection.length !== 2) return;
+
+      const [a, b] = state.questionSelection;
+
+      state.questionSelection = [];
+      resolveQuestion(state.current, a, b);
+    }
+
+    function resolveQuestion(actor, a, b) {
+      const target = 1 - actor;
+
+      const answer = sameClassPartition(
+        state.players[target].secret,
+        a,
+        b
+      );
+
+      state.questionCounts[actor]++;
+
+      state.candidates[actor] =
+        state.candidates[actor].filter(
+          code => sameClassCode(code, a, b) === answer
+        );
+
+      state.log.unshift({
+        type: "question",
+        actor: playerName(actor),
+        a,
+        b,
+        answer
+      });
+
+      state.current = target;
+      state.questionSelection = [];
+
+      render();
+
+      if (
+        state.mode === "ai" &&
+        state.current === 1
+      ) {
+        window.setTimeout(computerTurn, 700);
+      } else if (state.mode === "pvp") {
+        showTurnPrivacyScreen();
+      }
+    }
+
+    function pairKey(a, b) {
+      return a < b ? `${a}-${b}` : `${b}-${a}`;
+    }
+
+    function cycleManualMark(playerIndex, a, b) {
+      if (state.deductionMode !== "manual") return;
+      if (playerIndex !== state.current) return;
+
+      if (
+        state.mode === "ai" &&
+        playerIndex === 1
+      ) {
+        return;
+      }
+
+      const key = pairKey(a, b);
+      const currentMark =
+        state.manualMarks[playerIndex][key];
+
+      if (!currentMark) {
+        state.manualMarks[playerIndex][key] = "yes";
+      } else if (currentMark === "yes") {
+        state.manualMarks[playerIndex][key] = "no";
+      } else {
+        delete state.manualMarks[playerIndex][key];
+      }
+
+      render();
     }
 
     function knowledgeMarkup(playerIndex) {
+      if (state.deductionMode === "manual") {
+        const notes = state.manualMarks[playerIndex];
+        const cells = [];
+
+        for (let a = 0; a < state.size; a++) {
+          for (let b = a + 1; b < state.size; b++) {
+            const key = pairKey(a, b);
+            const mark = notes[key] || "unknown";
+
+            let symbol = "?";
+            let description = "Unknown";
+
+            if (mark === "yes") {
+              symbol = "✓";
+              description = "Equivalent";
+            } else if (mark === "no") {
+              symbol = "×";
+              description = "Not equivalent";
+            }
+
+            cells.push(`
+              <button
+                type="button"
+                class="knowledge-cell ${mark}"
+                onclick="
+                  cycleManualMark(${playerIndex}, ${a}, ${b})
+                "
+                title="${description}. Click to change."
+              >
+                <span>${a} ∼ ${b}</span>
+                <strong>${symbol}</strong>
+              </button>
+            `);
+          }
+        }
+
+        return cells.join("");
+      }
+
       const candidates = state.candidates[playerIndex];
 
       if (candidates.length === 0) {
-        return `<div class="knowledge-cell no">Contradiction</div>`;
+        return `
+          <div class="knowledge-cell no">
+            Contradiction
+          </div>
+        `;
       }
 
       const cells = [];
@@ -1550,8 +2217,8 @@
         for (let b = a + 1; b < state.size; b++) {
           let yesCount = 0;
 
-          for (const partition of candidates) {
-            if (sameClass(partition, a, b)) {
+          for (const code of candidates) {
+            if (sameClassCode(code, a, b)) {
               yesCount++;
             }
           }
@@ -1578,69 +2245,6 @@
       return cells.join("");
     }
 
-    function logEntryMarkup(entry) {
-      if (entry.type === "question") {
-        return `
-          <div class="log-entry">
-            <strong>${escapeHtml(entry.actor)}</strong> asked:
-            Is ${entry.a} ∼ ${entry.b}?
-            <small>
-              Answer:
-              <strong>${entry.answer ? "Yes" : "No"}</strong>
-            </small>
-          </div>
-        `;
-      }
-
-      return `
-        <div class="log-entry declare">
-          <strong>${escapeHtml(entry.actor)}</strong>
-          declared a partition.
-          <small>${entry.correct ? "The declaration was correct." : "The declaration was incorrect."}</small>
-        </div>
-      `;
-    }
-
-    function askHumanQuestion() {
-      const a = Number(document.getElementById("questionA").value);
-      const b = Number(document.getElementById("questionB").value);
-
-      if (a === b) {
-        alert("Choose two different points. Every point is automatically equivalent to itself.");
-        return;
-      }
-
-      resolveQuestion(state.current, a, b);
-    }
-
-    function resolveQuestion(actor, a, b) {
-      const target = 1 - actor;
-      const answer = sameClass(state.players[target].secret, a, b);
-
-      state.questionCounts[actor]++;
-
-      state.candidates[actor] = state.candidates[actor].filter(partition =>
-        sameClass(partition, a, b) === answer
-      );
-
-      state.log.unshift({
-        type: "question",
-        actor: playerName(actor),
-        a,
-        b,
-        answer
-      });
-
-      state.current = target;
-      render();
-
-      if (state.mode === "ai" && state.current === 1) {
-        window.setTimeout(computerTurn, 800);
-      } else if (state.mode === "pvp") {
-        showTurnPrivacyScreen();
-      }
-    }
-
     function allInformativePairs(candidates) {
       const pairs = [];
 
@@ -1648,8 +2252,8 @@
         for (let b = a + 1; b < state.size; b++) {
           let yes = 0;
 
-          for (const partition of candidates) {
-            if (sameClass(partition, a, b)) {
+          for (const code of candidates) {
+            if (sameClassCode(code, a, b)) {
               yes++;
             }
           }
@@ -1675,13 +2279,17 @@
       const candidates = state.candidates[1];
       const pairs = allInformativePairs(candidates);
 
-      if (pairs.length === 0) return null;
+      if (pairs.length === 0) {
+        return null;
+      }
 
       if (state.difficulty === "easy") {
         return randomChoice(pairs);
       }
 
-      pairs.sort((x, y) => y.score - x.score);
+      pairs.sort((first, second) =>
+        second.score - first.score
+      );
 
       if (state.difficulty === "medium") {
         const topCount = Math.min(6, pairs.length);
@@ -1692,19 +2300,32 @@
     }
 
     function computerTurn() {
-      if (state.screen !== "game" || state.current !== 1) return;
+      if (
+        state.screen !== "game" ||
+        state.current !== 1
+      ) {
+        return;
+      }
 
       const candidates = state.candidates[1];
 
       if (candidates.length === 1) {
-        finishDeclaration(1, candidates[0]);
+        finishDeclaration(
+          1,
+          codeToPartition(candidates[0], state.size)
+        );
+
         return;
       }
 
       const pair = chooseComputerQuestion();
 
       if (!pair) {
-        finishDeclaration(1, candidates[0]);
+        finishDeclaration(
+          1,
+          codeToPartition(candidates[0], state.size)
+        );
+
         return;
       }
 
@@ -1715,14 +2336,16 @@
       initializeBuilder("declaration");
 
       const modal = document.getElementById("modal");
+
       modal.classList.remove("hidden");
 
       modal.innerHTML = `
         <div class="modal-card">
           <h2>Declare the hidden partition</h2>
-          <p class="builder-help">
+
+          <p class="small-note">
             Build the complete partition you believe your opponent selected.
-            Remember: an incorrect declaration loses the game.
+            An incorrect declaration loses the game.
           </p>
 
           ${builderMarkup()}
@@ -1736,7 +2359,10 @@
               Submit declaration
             </button>
 
-            <button class="btn btn-secondary" onclick="closeModal()">
+            <button
+              class="btn btn-secondary"
+              onclick="closeModal()"
+            >
               Keep investigating
             </button>
           </div>
@@ -1747,22 +2373,28 @@
     }
 
     function closeModal() {
-      document.getElementById("modal").classList.add("hidden");
-      document.getElementById("modal").innerHTML = "";
+      const modal = document.getElementById("modal");
+
+      modal.classList.add("hidden");
+      modal.innerHTML = "";
       builder = null;
     }
 
     function submitDeclaration() {
-      const status = validateBuilder();
-      if (!status.valid) return;
+      const result = validateBuilder();
 
-      const declared = normalizePartition(builder.classes);
+      if (!result.valid) return;
+
+      const declared =
+        normalizePartition(builder.classes);
+
       closeModal();
       finishDeclaration(state.current, declared);
     }
 
     function finishDeclaration(actor, declaredPartition) {
       const target = 1 - actor;
+
       const correct =
         partitionKey(declaredPartition) ===
         partitionKey(state.players[target].secret);
@@ -1775,40 +2407,97 @@
 
       state.winner = correct ? actor : target;
       state.screen = "finished";
+
       render();
+    }
+
+    function logEntryMarkup(entry) {
+      if (entry.type === "question") {
+        return `
+          <div class="log-entry">
+            <strong>${escapeHtml(entry.actor)}</strong>
+            asked: Is ${entry.a} ∼ ${entry.b}?
+
+            <small>
+              Answer:
+              <strong>${entry.answer ? "Yes" : "No"}</strong>
+            </small>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="log-entry declare">
+          <strong>${escapeHtml(entry.actor)}</strong>
+          declared a partition.
+
+          <small>
+            ${
+              entry.correct
+                ? "The declaration was correct."
+                : "The declaration was incorrect."
+            }
+          </small>
+        </div>
+      `;
     }
 
     function renderFinished() {
       const winner = state.winner;
       const loser = 1 - winner;
-      const lastEntry = state.log[0];
-      const declarationCorrect = lastEntry?.correct;
+      const declarationCorrect =
+        state.log[0] && state.log[0].correct;
 
       document.getElementById("app").innerHTML = `
-        <section class="card" style="max-width:800px;margin:0 auto;text-align:center">
+        <section
+          class="card"
+          style="
+            max-width:800px;
+            margin:0 auto;
+            text-align:center
+          "
+        >
           <div class="logo" style="margin:0 auto 16px">
             ${declarationCorrect ? "✓" : "!"}
           </div>
 
-          <h2>${escapeHtml(playerName(winner))} wins!</h2>
+          <h2>
+            ${escapeHtml(playerName(winner))} wins!
+          </h2>
 
           <p>
             ${
               declarationCorrect
-                ? `${escapeHtml(playerName(winner))} correctly identified the hidden partition.`
-                : `${escapeHtml(playerName(loser))} made an incorrect declaration.`
+                ? `
+                  ${escapeHtml(playerName(winner))}
+                  correctly identified the hidden partition.
+                `
+                : `
+                  ${escapeHtml(playerName(loser))}
+                  made an incorrect declaration.
+                `
             }
           </p>
 
           <div class="result-partitions">
             <div class="result-partition">
-              <strong>${escapeHtml(playerName(0))}’s partition</strong>
-              <div>${formatPartition(state.players[0].secret)}</div>
+              <strong>
+                ${escapeHtml(playerName(0))}’s partition
+              </strong>
+
+              <div>
+                ${formatPartition(state.players[0].secret)}
+              </div>
             </div>
 
             <div class="result-partition">
-              <strong>${escapeHtml(playerName(1))}’s partition</strong>
-              <div>${formatPartition(state.players[1].secret)}</div>
+              <strong>
+                ${escapeHtml(playerName(1))}’s partition
+              </strong>
+
+              <div>
+                ${formatPartition(state.players[1].secret)}
+              </div>
             </div>
           </div>
 
@@ -1826,12 +2515,21 @@
             </div>
           </div>
 
-          <div class="button-row" style="justify-content:center">
-            <button class="btn btn-primary" onclick="playAgain()">
+          <div
+            class="button-row"
+            style="justify-content:center"
+          >
+            <button
+              class="btn btn-primary"
+              onclick="playAgain()"
+            >
               Play again
             </button>
 
-            <button class="btn btn-secondary" onclick="returnToSetup()">
+            <button
+              class="btn btn-secondary"
+              onclick="returnToSetup()"
+            >
               Change settings
             </button>
           </div>
@@ -1840,34 +2538,57 @@
     }
 
     function playAgain() {
-      state.screen = "secret";
       state.players[0].secret = null;
       state.players[1].secret = null;
       state.setupPlayer = 0;
+      state.screen = "secret";
+
       initializeBuilder("setup");
       render();
     }
 
-    function showPrivacyOverlay(title, message, buttonText, callback) {
-      const overlay = document.getElementById("privacyOverlay");
+    function returnToSetup() {
+      closeModal();
+
+      state.screen = "setup";
+      builder = null;
+
+      render();
+    }
+
+    function showPrivacyOverlay(
+      title,
+      message,
+      buttonText,
+      callback
+    ) {
+      const overlay =
+        document.getElementById("privacyOverlay");
+
       overlay.classList.remove("hidden");
 
       overlay.innerHTML = `
         <div class="overlay-card">
           <div class="logo">≈</div>
+
           <h2>${escapeHtml(title)}</h2>
           <p>${escapeHtml(message)}</p>
-          <button id="privacyContinue" class="btn btn-primary">
+
+          <button
+            id="privacyContinue"
+            class="btn btn-primary"
+          >
             ${escapeHtml(buttonText)}
           </button>
         </div>
       `;
 
-      document.getElementById("privacyContinue").onclick = () => {
-        overlay.classList.add("hidden");
-        overlay.innerHTML = "";
-        callback();
-      };
+      document.getElementById("privacyContinue").onclick =
+        () => {
+          overlay.classList.add("hidden");
+          overlay.innerHTML = "";
+          callback();
+        };
     }
 
     function showTurnPrivacyScreen() {
